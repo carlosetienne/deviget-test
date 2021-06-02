@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD4D82982665E8FA00FDCF02 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4D82972665E8FA00FDCF02 /* MasterViewController.swift */; };
+		CD4D829D2665E9D800FDCF02 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4D829C2665E9D800FDCF02 /* DetailViewController.swift */; };
 		CD4EBA742665E14500771441 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4EBA732665E14500771441 /* AppDelegate.swift */; };
 		CD4EBA762665E14500771441 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4EBA752665E14500771441 /* SceneDelegate.swift */; };
 		CD4EBA7B2665E14500771441 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD4EBA792665E14500771441 /* Main.storyboard */; };
@@ -15,6 +17,8 @@
 		CD4EBA832665E14600771441 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD4EBA812665E14600771441 /* LaunchScreen.storyboard */; };
 		CD4EBA8E2665E14600771441 /* iOSTestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4EBA8D2665E14600771441 /* iOSTestTests.swift */; };
 		CD4EBA992665E14600771441 /* iOSTestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4EBA982665E14600771441 /* iOSTestUITests.swift */; };
+		CDC819E22666F6BA00339D7C /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC819E12666F6BA00339D7C /* Reachability.swift */; };
+		CDC819EA266711C500339D7C /* ReditModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC819E9266711C500339D7C /* ReditModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +39,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CD4D82972665E8FA00FDCF02 /* MasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
+		CD4D829C2665E9D800FDCF02 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		CD4EBA702665E14500771441 /* iOSTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD4EBA732665E14500771441 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CD4EBA752665E14500771441 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -49,6 +55,8 @@
 		CD4EBA942665E14600771441 /* iOSTestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD4EBA982665E14600771441 /* iOSTestUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSTestUITests.swift; sourceTree = "<group>"; };
 		CD4EBA9A2665E14600771441 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDC819E12666F6BA00339D7C /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		CDC819E9266711C500339D7C /* ReditModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReditModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,13 +107,16 @@
 		CD4EBA722665E14500771441 /* iOSTest */ = {
 			isa = PBXGroup;
 			children = (
+				CDC819D82666F68A00339D7C /* Resources */,
 				CD4EBA732665E14500771441 /* AppDelegate.swift */,
 				CD4EBA752665E14500771441 /* SceneDelegate.swift */,
 				CD4EBA792665E14500771441 /* Main.storyboard */,
+				CD4D82972665E8FA00FDCF02 /* MasterViewController.swift */,
 				CD4EBA7F2665E14600771441 /* Assets.xcassets */,
 				CD4EBA812665E14600771441 /* LaunchScreen.storyboard */,
 				CD4EBA842665E14600771441 /* Info.plist */,
 				CD4EBA7C2665E14500771441 /* iOSTest.xcdatamodeld */,
+				CD4D829C2665E9D800FDCF02 /* DetailViewController.swift */,
 			);
 			path = iOSTest;
 			sourceTree = "<group>";
@@ -126,6 +137,15 @@
 				CD4EBA9A2665E14600771441 /* Info.plist */,
 			);
 			path = iOSTestUITests;
+			sourceTree = "<group>";
+		};
+		CDC819D82666F68A00339D7C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CDC819E12666F6BA00339D7C /* Reachability.swift */,
+				CDC819E9266711C500339D7C /* ReditModel.swift */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,8 +278,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDC819E22666F6BA00339D7C /* Reachability.swift in Sources */,
+				CD4D82982665E8FA00FDCF02 /* MasterViewController.swift in Sources */,
 				CD4EBA742665E14500771441 /* AppDelegate.swift in Sources */,
+				CD4D829D2665E9D800FDCF02 /* DetailViewController.swift in Sources */,
 				CD4EBA762665E14500771441 /* SceneDelegate.swift in Sources */,
+				CDC819EA266711C500339D7C /* ReditModel.swift in Sources */,
 				CD4EBA7E2665E14500771441 /* iOSTest.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
