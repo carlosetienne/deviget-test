@@ -4,28 +4,28 @@
 
 import Foundation
 
-// MARK: - Welcome
-struct Welcome: Codable {
+// MARK: - newJSONDecoderRedditModel
+struct newJSONDecoderRedditModel: Codable {
     let kind: String
-    let data: WelcomeData
+    let data: newJSONDecoderRedditModelData
 }
 
-// MARK: - WelcomeData
-struct WelcomeData: Codable {
+// MARK: - newJSONDecoderRedditModelData
+struct newJSONDecoderRedditModelData: Codable {
     let modhash: String
     let dist: Int
-    let children: [Child]
+    let children: [newJSONDecoderChild]
     let after, before: JSONNull?
 }
 
-// MARK: - Child
-struct Child: Codable {
+// MARK: - newJSONDecoderChild
+struct newJSONDecoderChild: Codable {
     let kind: String
-    let data: ChildData
+    let data: newJSONDecoderChildData
 }
 
-// MARK: - ChildData
-struct ChildData: Codable {
+// MARK: - newJSONDecoderChildData
+struct newJSONDecoderChildData: Codable {
     let approvedAtUTC: JSONNull?
     let subreddit, selftext, authorFullname: String
     let saved: Bool
@@ -36,27 +36,27 @@ struct ChildData: Codable {
     let linkFlairRichtext: [JSONAny]
     let subredditNamePrefixed: String
     let hidden: Bool
-    let pwls: Int
-    let linkFlairCSSClass: String?
-    let downs: Int
-    let thumbnailHeight, topAwardedType: JSONNull?
+    let pwls, linkFlairCSSClass: JSONNull?
+    let downs, thumbnailHeight: Int
+    let topAwardedType: JSONNull?
     let hideScore: Bool
     let name: String
     let quarantine: Bool
     let linkFlairTextColor: String
-    let upvoteRatio: Double
+    let upvoteRatio: Int
     let authorFlairBackgroundColor: JSONNull?
     let subredditType: String
     let ups, totalAwardsReceived: Int
-    let mediaEmbed: Gildings
-    let thumbnailWidth, authorFlairTemplateID: JSONNull?
+    let mediaEmbed: newJSONDecoderGildings
+    let thumbnailWidth: Int
+    let authorFlairTemplateID: JSONNull?
     let isOriginalContent: Bool
     let userReports: [JSONAny]
     let secureMedia: JSONNull?
     let isRedditMediaDomain, isMeta: Bool
     let category: JSONNull?
-    let secureMediaEmbed: Gildings
-    let linkFlairText: String?
+    let secureMediaEmbed: newJSONDecoderGildings
+    let linkFlairText: JSONNull?
     let canModPost: Bool
     let score: Int
     let approvedBy: JSONNull?
@@ -65,24 +65,24 @@ struct ChildData: Codable {
     let edited: Bool
     let authorFlairCSSClass: JSONNull?
     let authorFlairRichtext: [JSONAny]
-    let gildings: Gildings
+    let gildings: newJSONDecoderGildings
+    let postHint: String
     let contentCategories: JSONNull?
     let isSelf: Bool
     let modNote: JSONNull?
     let created: Int
     let linkFlairType: String
-    let wls: Int
-    let removedByCategory, bannedBy: JSONNull?
+    let wls, removedByCategory, bannedBy: JSONNull?
     let authorFlairType, domain: String
     let allowLiveComments: Bool
-    let selftextHTML: String?
-    let likes, suggestedSort, bannedAtUTC, viewCount: JSONNull?
+    let selftextHTML, likes, suggestedSort, bannedAtUTC: JSONNull?
+    let urlOverriddenByDest: String
+    let viewCount: JSONNull?
     let archived, noFollow, isCrosspostable, pinned: Bool
     let over18: Bool
+    let preview: newJSONDecoderPreview
     let allAwardings, awarders: [JSONAny]
-    let mediaOnly: Bool
-    let linkFlairTemplateID: String?
-    let canGild, spoiler, locked: Bool
+    let mediaOnly, canGild, spoiler, locked: Bool
     let authorFlairText: JSONNull?
     let treatmentTags: [JSONAny]
     let visited: Bool
@@ -96,14 +96,14 @@ struct ChildData: Codable {
     let discussionType: JSONNull?
     let numComments: Int
     let sendReplies: Bool
-    let whitelistStatus: String
+    let whitelistStatus: JSONNull?
     let contestMode: Bool
-    let pollData: PollData?
+    let modReports: [JSONAny]
     let authorPatreonFlair: Bool
     let authorFlairTextColor: JSONNull?
-    let permalink, parentWhitelistStatus: String
+    let permalink: String
+    let parentWhitelistStatus: JSONNull?
     let stickied: Bool
-    let modReports: [JSONAny]
     let url: String
     let subredditSubscribers, createdUTC, numCrossposts: Int
     let media: JSONNull?
@@ -151,6 +151,7 @@ struct ChildData: Codable {
         case authorFlairCSSClass = "author_flair_css_class"
         case authorFlairRichtext = "author_flair_richtext"
         case gildings
+        case postHint = "post_hint"
         case contentCategories = "content_categories"
         case isSelf = "is_self"
         case modNote = "mod_note"
@@ -166,16 +167,17 @@ struct ChildData: Codable {
         case likes
         case suggestedSort = "suggested_sort"
         case bannedAtUTC = "banned_at_utc"
+        case urlOverriddenByDest = "url_overridden_by_dest"
         case viewCount = "view_count"
         case archived
         case noFollow = "no_follow"
         case isCrosspostable = "is_crosspostable"
         case pinned
         case over18 = "over_18"
+        case preview
         case allAwardings = "all_awardings"
         case awarders
         case mediaOnly = "media_only"
-        case linkFlairTemplateID = "link_flair_template_id"
         case canGild = "can_gild"
         case spoiler, locked
         case authorFlairText = "author_flair_text"
@@ -197,14 +199,12 @@ struct ChildData: Codable {
         case sendReplies = "send_replies"
         case whitelistStatus = "whitelist_status"
         case contestMode = "contest_mode"
-        case pollData = "poll_data"
+        case modReports = "mod_reports"
         case authorPatreonFlair = "author_patreon_flair"
         case authorFlairTextColor = "author_flair_text_color"
         case permalink
         case parentWhitelistStatus = "parent_whitelist_status"
-        case stickied
-        case modReports = "mod_reports"
-        case url
+        case stickied, url
         case subredditSubscribers = "subreddit_subscribers"
         case createdUTC = "created_utc"
         case numCrossposts = "num_crossposts"
@@ -213,37 +213,28 @@ struct ChildData: Codable {
     }
 }
 
-// MARK: - Gildings
-struct Gildings: Codable {
+// MARK: - newJSONDecoderGildings
+struct newJSONDecoderGildings: Codable {
 }
 
-// MARK: - PollData
-struct PollData: Codable {
-    let userWonAmount, tournamentID: JSONNull?
-    let votingEndTimestamp: Int
-    let options: [Option]
-    let userSelection: JSONNull?
-    let isPrediction: Bool
-    let resolvedOptionID: JSONNull?
-    let totalVoteCount: Int
-    let totalStakeAmount: JSONNull?
-
-    enum CodingKeys: String, CodingKey {
-        case userWonAmount = "user_won_amount"
-        case tournamentID = "tournament_id"
-        case votingEndTimestamp = "voting_end_timestamp"
-        case options
-        case userSelection = "user_selection"
-        case isPrediction = "is_prediction"
-        case resolvedOptionID = "resolved_option_id"
-        case totalVoteCount = "total_vote_count"
-        case totalStakeAmount = "total_stake_amount"
-    }
+// MARK: - newJSONDecoderPreview
+struct newJSONDecoderPreview: Codable {
+    let images: [newJSONDecoderImage]
+    let enabled: Bool
 }
 
-// MARK: - Option
-struct Option: Codable {
-    let text, id: String
+// MARK: - newJSONDecoderImage
+struct newJSONDecoderImage: Codable {
+    let source: newJSONDecoderSource
+    let resolutions: [newJSONDecoderSource]
+    let variants: newJSONDecoderGildings
+    let id: String
+}
+
+// MARK: - newJSONDecoderSource
+struct newJSONDecoderSource: Codable {
+    let url: String
+    let width, height: Int
 }
 
 // MARK: - Encode/decode helpers
@@ -487,4 +478,3 @@ class JSONAny: Codable {
         }
     }
 }
-

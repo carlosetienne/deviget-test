@@ -8,8 +8,18 @@
 import UIKit
 import Foundation
 
+struct RedditData{
+    var title : String = ""
+    var author: String = ""
+    var comments: Int = 0
+    var created: Int = 0
+    var seen: Bool = false
+    var image: String = ""
+}
+
 class MasterViewController: UITableViewController {
     var result  = [Any]()
+    var dataArray = [RedditData]()
 
     func getRedditJSON(whichReddit : String){
         let newJSONDecoder = JSONDecoder()
@@ -22,38 +32,89 @@ class MasterViewController: UITableViewController {
                 return
             }
             DispatchQueue.main.async {
-                guard let data = data else {
-                    print("Data is empty")
-                    return
+                if let data = data {
+                    do {
+                        let jsondata = try newJSONDecoder.decode(newJSONDecoderRedditModel.self, from: data)
+                        print(jsondata)
+                        for children in jsondata.data.children {
+                            var redditData: RedditData! = RedditData()
+                            
+                            redditData.author = children.data.author
+                            redditData.comments = children.data.numComments
+                            redditData.created = children.data.created
+                            redditData.title = children.data.title
+                            redditData.image = children.data.thumbnail
+                            self.dataArray.append(redditData)
+                        }
+                        
+                        self.tableView.reloadData()
+                    } catch {
+                        print(error)
+                    }
                 }
-                let jsondata = try? newJSONDecoder.decode(Welcome.self, from: data)
-                //print(jsondata?.data.children[0].data.title ?? "NA")
             }
-             
-           })
-           networkTask.resume()
-       }
+        })
+        networkTask.resume()
+    }
+    
+    func addToDataArray(data: newJSONDecoderRedditModel){
+        for children in data.data.children {
+            var redditData: RedditData! = RedditData()
 
+            redditData.author = children.data.author
+            redditData.comments = children.data.numComments
+            redditData.created = children.data.created
+            redditData.title = children.data.title
+            redditData.seen = false
+            dataArray.append(redditData)
+        }
+        
+        for d in dataArray {
+            print(d.title)
+        }
+        self.tableView.reloadData()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         getRedditJSON(whichReddit: "https://www.reddit.com/r/subreddit/top/.json?limit=50")
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
     }
 
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return dataArray.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let data = dataArray[indexPath.row]
+        
+        let seenImage = cell.viewWithTag(10) as? UIImageView
+        if data.seen == false {
+            seenImage?.tintColor = .blue
+        } else {
+            seenImage?.tintColor = .black
+        }
+        
+        let authorLabel = cell.viewWithTag(11) as? UILabel
+        authorLabel?.text = data.author
+        
+        if data.image.count > 8 {
+            let imageThumbnail = cell.viewWithTag(20) as? UIImageView
+            let url = URL(string: data.image)
+            let imageData = try? Data(contentsOf: url!)
+            imageThumbnail?.image = UIImage(data: imageData!)
+        }
+      
+        let titleLabel = cell.viewWithTag(21) as? UILabel
+        titleLabel?.text = data.title
+        
+        let commentsLabel = cell.viewWithTag(31) as? UILabel
+        commentsLabel?.text = "\(data.comments) comments"
+        
         return cell
     }
     
