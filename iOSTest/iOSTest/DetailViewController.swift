@@ -8,7 +8,30 @@
 import UIKit
 
 class DetailViewController: UIViewController {
-
+    @IBOutlet weak var authorLabel: UILabel!
+    @IBOutlet weak var titleText: UITextView!
+    @IBOutlet weak var imageView: UIImageView!
+    
+    var post: RedditData? {
+      didSet {
+        refreshUI()
+      }
+    }
+    
+    private func refreshUI() {
+      loadViewIfNeeded()
+        authorLabel.text = post?.author
+        titleText.text = post?.title
+        
+        if post?.image.count ?? 0 > 8 {
+            let url = URL(string: post?.image ?? "")
+            let imageData = try? Data(contentsOf: url!)
+            imageView?.image = UIImage(data: imageData!)
+        } else{
+            imageView?.image = UIImage(named:"placeholder")!
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,4 +49,10 @@ class DetailViewController: UIViewController {
     }
     */
 
+}
+
+extension DetailViewController: postSelectionDelegate {
+    func postSelected(_ newPost: RedditData){
+    post = newPost
+  }
 }

@@ -17,9 +17,20 @@ struct RedditData{
     var image: String = ""
 }
 
+protocol postSelectionDelegate: class {
+  func postSelected(_ newPost: RedditData)
+}
+
 class MasterViewController: UITableViewController {
     var result  = [Any]()
     var dataArray = [RedditData]()
+    weak var delegate: postSelectionDelegate?
+    
+    func setupSplit() {
+        splitViewController?.delegate = self
+        splitViewController!.preferredDisplayMode = UISplitViewController.DisplayMode.oneOverSecondary
+        splitViewController!.preferredDisplayMode = UISplitViewController.DisplayMode.oneBesideSecondary
+    }
 
     func getRedditJSON(whichReddit : String){
         let newJSONDecoder = JSONDecoder()
@@ -74,11 +85,23 @@ class MasterViewController: UITableViewController {
         }
         self.tableView.reloadData()
     }
-
+    
+    func validateSelect() {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            tableView.deselectRow(at: IndexPath(row: 0, section: 0), animated: false)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupSplit()
+        validateSelect()
         getRedditJSON(whichReddit: "https://www.reddit.com/r/subreddit/top/.json?limit=50")
-        
+       
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        validateSelect()
     }
 
     // MARK: - Table view data source
@@ -102,11 +125,13 @@ class MasterViewController: UITableViewController {
         let authorLabel = cell.viewWithTag(11) as? UILabel
         authorLabel?.text = data.author
         
+        let imageThumbnail = cell.viewWithTag(20) as? UIImageView
         if data.image.count > 8 {
-            let imageThumbnail = cell.viewWithTag(20) as? UIImageView
             let url = URL(string: data.image)
             let imageData = try? Data(contentsOf: url!)
             imageThumbnail?.image = UIImage(data: imageData!)
+        } else{
+            imageThumbnail?.image = UIImage(named:"placeholder")!
         }
       
         let titleLabel = cell.viewWithTag(21) as? UILabel
@@ -118,7 +143,14 @@ class MasterViewController: UITableViewController {
         return cell
     }
     
-
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+      let selectedPost = dataArray[indexPath.row]
+        delegate?.postSelected(selectedPost)
+        if let detailViewController = delegate as? DetailViewController {
+          splitViewController?.showDetailViewController(detailViewController, sender: nil)
+        }
+    }
+    
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -164,4 +196,10 @@ class MasterViewController: UITableViewController {
     }
     */
 
+}
+
+extension MasterViewController: UISplitViewControllerDelegate {
+    func splitViewController(_ svc: UISplitViewController, topColumnForCollapsingToProposedTopColumn proposedTopColumn: UISplitViewController.Column) -> UISplitViewController.Column {
+        return .primary
+    }
 }
