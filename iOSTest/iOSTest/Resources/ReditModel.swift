@@ -41,7 +41,6 @@ struct newJSONDecoderChildData: Codable {
     let pwls: Int
     let linkFlairCSSClass: String?
     let downs, thumbnailHeight: Int
-    let topAwardedType: JSONNull?
     let hideScore: Bool
     let name: String
     let quarantine: Bool
@@ -129,7 +128,6 @@ struct newJSONDecoderChildData: Codable {
         case linkFlairCSSClass = "link_flair_css_class"
         case downs
         case thumbnailHeight = "thumbnail_height"
-        case topAwardedType = "top_awarded_type"
         case hideScore = "hide_score"
         case name, quarantine
         case linkFlairTextColor = "link_flair_text_color"

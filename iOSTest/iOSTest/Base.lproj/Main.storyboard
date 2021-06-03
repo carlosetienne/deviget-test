@@ -150,9 +150,11 @@
                                     <outlet property="delegate" destination="ou3-eP-OWe" id="ONA-qO-7Em"/>
                                 </connections>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="buZ-NH-GpL">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="buZ-NH-GpL">
                                 <rect key="frame" x="106" y="752" width="203" height="36"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="203" id="0uO-pT-e0l"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="Dismiss All">
                                     <color key="titleColor" red="1" green="0.62173247129999998" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -164,6 +166,11 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="92R-gE-Fvs"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="92R-gE-Fvs" firstAttribute="trailing" secondItem="buZ-NH-GpL" secondAttribute="trailing" constant="105" id="7fV-mZ-9Va"/>
+                            <constraint firstAttribute="bottom" secondItem="buZ-NH-GpL" secondAttribute="bottom" constant="20" symbolic="YES" id="WMl-oz-1vm"/>
+                            <constraint firstItem="buZ-NH-GpL" firstAttribute="leading" secondItem="92R-gE-Fvs" secondAttribute="leading" constant="106" id="pfP-rs-XKK"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Reddit Posts" id="GLN-YI-8mo"/>
                     <connections>
