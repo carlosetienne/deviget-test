@@ -62,7 +62,12 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
                             redditData.created = children.data.created
                             redditData.title = children.data.title
                             redditData.image = children.data.thumbnail
-                            self.dataArray.append(redditData)
+                            
+                            if self.dataArray.first(where: { $0.title == children.data.title }) != nil {
+                               print("Already Exists")
+                            } else {
+                                self.dataArray.append(redditData)
+                            }
                         }
                         
                         self.tableView?.reloadData()
