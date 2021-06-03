@@ -46,7 +46,6 @@ class MasterViewController: UITableViewController {
                 if let data = data {
                     do {
                         let jsondata = try newJSONDecoder.decode(newJSONDecoderRedditModel.self, from: data)
-                        print(jsondata)
                         for children in jsondata.data.children {
                             var redditData: RedditData! = RedditData()
                             
@@ -71,7 +70,6 @@ class MasterViewController: UITableViewController {
     func addToDataArray(data: newJSONDecoderRedditModel){
         for children in data.data.children {
             var redditData: RedditData! = RedditData()
-
             redditData.author = children.data.author
             redditData.comments = children.data.numComments
             redditData.created = children.data.created
@@ -80,9 +78,6 @@ class MasterViewController: UITableViewController {
             dataArray.append(redditData)
         }
         
-        for d in dataArray {
-            print(d.title)
-        }
         self.tableView.reloadData()
     }
     
@@ -145,7 +140,9 @@ class MasterViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
       let selectedPost = dataArray[indexPath.row]
+        dataArray[indexPath.row].seen = true
         delegate?.postSelected(selectedPost)
+        tableView.reloadData()
         if let detailViewController = delegate as? DetailViewController {
           splitViewController?.showDetailViewController(detailViewController, sender: nil)
         }

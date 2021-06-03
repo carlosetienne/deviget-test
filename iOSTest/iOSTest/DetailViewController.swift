@@ -10,7 +10,13 @@ import UIKit
 class DetailViewController: UIViewController {
     @IBOutlet weak var authorLabel: UILabel!
     @IBOutlet weak var titleText: UITextView!
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var imageButton: UIButton!
+    var currentImage: UIImage!
+    
+    @IBAction func saveImageButton(_ sender: Any) {
+        let imageSaver = ImageSaver()
+        imageSaver.writeToPhotoAlbum(image: currentImage)
+    }
     
     var post: RedditData? {
       didSet {
@@ -24,11 +30,14 @@ class DetailViewController: UIViewController {
         titleText.text = post?.title
         
         if post?.image.count ?? 0 > 8 {
-            let url = URL(string: post?.image ?? "")
-            let imageData = try? Data(contentsOf: url!)
-            imageView?.image = UIImage(data: imageData!)
+            if let image = UIImage(named: post?.image ?? "placeholder") {
+                currentImage = image
+                imageButton.setImage(image, for: .normal)
+            }
         } else{
-            imageView?.image = UIImage(named:"placeholder")!
+            let image = UIImage(named:"placeholder")
+            currentImage = image
+            imageButton.setImage(image, for: .normal)
         }
     }
     
@@ -48,7 +57,16 @@ class DetailViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    class ImageSaver: NSObject {
+        func writeToPhotoAlbum(image: UIImage) {
+            UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveError), nil)
+        }
 
+        @objc func saveError(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+            print("Save finished!")
+        }
+    }
 }
 
 extension DetailViewController: postSelectionDelegate {
