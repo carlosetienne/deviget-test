@@ -12,11 +12,31 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var titleText: UITextView!
     @IBOutlet weak var imageButton: UIButton!
     var currentImage: UIImage!
-    
+    var isSmallImagen = true
+    var oldImageButtonX: CGFloat = 0.0
+    var oldImageButtonY: CGFloat = 0.0
+
     //Action that saves the UIImage in the photo gallery
     @IBAction func saveImageButton(_ sender: Any) {
-        let imageSaver = ImageSaver()
-        imageSaver.writeToPhotoAlbum(image: currentImage)
+        if isSmallImagen {
+            let imageSaver = ImageSaver()
+            imageSaver.writeToPhotoAlbum(image: currentImage)
+            let screenSize: CGRect = UIScreen.main.bounds
+            let screenWidth = screenSize.width
+            let screenHeight = screenSize.height
+            
+            oldImageButtonX = imageButton.frame.origin.x
+            oldImageButtonY = imageButton.frame.origin.y
+
+            imageButton.contentVerticalAlignment = .fill
+            imageButton.contentHorizontalAlignment = .fill
+            imageButton.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
+            isSmallImagen = false
+        } else{
+            imageButton.frame = CGRect(x: oldImageButtonX, y: oldImageButtonY, width: 100, height: 100)
+            isSmallImagen = true
+        }
+       
     }
     
     //Refreshes the UI

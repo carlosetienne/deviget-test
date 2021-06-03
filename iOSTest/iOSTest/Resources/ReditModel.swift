@@ -39,7 +39,7 @@ struct newJSONDecoderChildData: Codable {
     let subredditNamePrefixed: newJSONDecoderSubredditNamePrefixed
     let hidden: Bool
     let pwls: Int
-    let linkFlairCSSClass: JSONNull?
+    let linkFlairCSSClass: String?
     let downs, thumbnailHeight: Int
     let topAwardedType: JSONNull?
     let hideScore: Bool
@@ -59,7 +59,7 @@ struct newJSONDecoderChildData: Codable {
     let isRedditMediaDomain, isMeta: Bool
     let category: JSONNull?
     let secureMediaEmbed: newJSONDecoderMediaEmbed
-    let linkFlairText: String?
+    let linkFlairText: newJSONDecoderLinkFlairText?
     let canModPost: Bool
     let score: Int
     let approvedBy: JSONNull?
@@ -114,6 +114,7 @@ struct newJSONDecoderChildData: Codable {
     let subredditSubscribers, createdUTC, numCrossposts: Int
     let media: newJSONDecoderMedia?
     let isVideo: Bool
+    let linkFlairTemplateID: String?
 
     enum CodingKeys: String, CodingKey {
         case approvedAtUTC = "approved_at_utc"
@@ -216,6 +217,7 @@ struct newJSONDecoderChildData: Codable {
         case numCrossposts = "num_crossposts"
         case media
         case isVideo = "is_video"
+        case linkFlairTemplateID = "link_flair_template_id"
     }
 }
 
@@ -347,6 +349,10 @@ struct newJSONDecoderGildings: Codable {
         case gid1 = "gid_1"
         case gid2 = "gid_2"
     }
+}
+
+enum newJSONDecoderLinkFlairText: String, Codable {
+    case verified = "Verified"
 }
 
 // MARK: - newJSONDecoderMedia
