@@ -64,7 +64,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
                             redditData.title = children.data.title
                             redditData.image = children.data.thumbnail
                             
-                            let timeInterval = TimeInterval(children.data.created)
+                            let timeInterval = TimeInterval(children.data.createdUTC)
                             let myNSDate = Date(timeIntervalSince1970: timeInterval)
                             
                             let interval = Date() - myNSDate
@@ -141,13 +141,9 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         let imageThumbnail = cell.viewWithTag(20) as? UIImageView
         if data.image.count > 8 {
-            let url = URL(string: data.image)
-            let imageData = try? Data(contentsOf: url!)
-            imageThumbnail?.image = UIImage(data: imageData!)
-        } else{
-            imageThumbnail?.image = UIImage(named:"placeholder")!
+            imageThumbnail?.imageFromServerURL(data.image, placeHolder: UIImage(named: "placeholder"))
         }
-      
+        
         let titleLabel = cell.viewWithTag(21) as? UILabel
         titleLabel?.text = data.title
         
@@ -241,5 +237,41 @@ extension Date {
         let second = Calendar.current.dateComponents([.second], from: previous, to: recent).second
 
         return (month: month, day: day, hour: hour, minute: minute, second: second)
+    }
+}
+
+extension UIImageView{
+    func imageFromServerURL(_ URLString: String, placeHolder: UIImage?) {
+        let imageCache = NSCache<NSString, UIImage>()
+
+        //self.image = nil
+        if let cachedImage = imageCache.object(forKey: NSString(string: URLString)) {
+            self.image = cachedImage
+            return
+        }
+        
+        if let url = URL(string: URLString) {
+            URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+                
+                //print("RESPONSE FROM API: \(response)")
+                if error != nil {
+                    print("ERROR LOADING IMAGES FROM URL: \(String(describing: error))")
+                    DispatchQueue.main.async {
+                        self.image = placeHolder
+                    }
+                    return
+                }
+                DispatchQueue.main.async {
+                    if let data = data {
+                        if let downloadedImage = UIImage(data: data) {
+                            imageCache.setObject(downloadedImage, forKey: NSString(string: URLString))
+                            self.image = downloadedImage
+                        }
+                    }
+                }
+            }).resume()
+        } else{
+            self.image = placeHolder
+        }
     }
 }
