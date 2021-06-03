@@ -35,7 +35,6 @@
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aY4-ov-fzX">
                                 <rect key="frame" x="157" y="152" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" backgroundImage="placeholder"/>
                                 <connections>
                                     <action selector="saveImageButton:" destination="B5g-fK-AVK" eventType="touchUpInside" id="hOP-Nw-VP0"/>
                                 </connections>
@@ -211,7 +210,6 @@
         <image name="chevron.right" catalog="system" width="96" height="128"/>
         <image name="circle.fill" catalog="system" width="128" height="121"/>
         <image name="multiply.circle" catalog="system" width="128" height="121"/>
-        <image name="placeholder" width="900" height="497"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

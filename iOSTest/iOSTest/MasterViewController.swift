@@ -12,7 +12,7 @@ struct RedditData{
     var title : String = ""
     var author: String = ""
     var comments: Int = 0
-    var created: Int = 0
+    var created: String = ""
     var seen: Bool = false
     var image: String = ""
 }
@@ -26,7 +26,8 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var dataArray = [RedditData]()
     weak var delegate: postSelectionDelegate?
     var refreshControl = UIRefreshControl()
-
+    var selectedPosition: Int = 0
+    
     @IBOutlet weak var tableView: UITableView?
 
     @IBAction func dismissAll(_ sender: Any) {
@@ -40,6 +41,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
         splitViewController!.preferredDisplayMode = UISplitViewController.DisplayMode.oneBesideSecondary
     }
 
+    //This function retrieves the Json data from Reddit API using URL Session and add it to an array
     func getRedditJSON(whichReddit : String){
         let newJSONDecoder = JSONDecoder()
         
@@ -59,9 +61,14 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
                             
                             redditData.author = children.data.author
                             redditData.comments = children.data.numComments
-                            redditData.created = children.data.created
                             redditData.title = children.data.title
                             redditData.image = children.data.thumbnail
+                            
+                            let timeInterval = TimeInterval(children.data.created)
+                            let myNSDate = Date(timeIntervalSince1970: timeInterval)
+                            
+                            let interval = Date() - myNSDate
+                            redditData.created = "\(interval.hour ?? 0) hours ago"
                             
                             if self.dataArray.first(where: { $0.title == children.data.title }) != nil {
                                print("Already Exists")
@@ -80,26 +87,14 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
         networkTask.resume()
     }
     
-    func addToDataArray(data: newJSONDecoderRedditModel){
-        for children in data.data.children {
-            var redditData: RedditData! = RedditData()
-            redditData.author = children.data.author
-            redditData.comments = children.data.numComments
-            redditData.created = children.data.created
-            redditData.title = children.data.title
-            redditData.seen = false
-            dataArray.append(redditData)
-        }
-        
-        self.tableView?.reloadData()
-    }
-    
+    //Just a little workaround to setup the SplitViewController if its an iPhone
     func validateSelect() {
         if UIDevice.current.userInterfaceIdiom == .phone {
             self.tableView?.deselectRow(at: IndexPath(row: 0, section: 0), animated: false)
         }
     }
     
+    //Setup some views and adds the refresh control to the TableView
     override func viewDidLoad() {
         super.viewDidLoad()
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
@@ -107,12 +102,12 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.tableView?.refreshControl = refreshControl
         setupSplit()
         validateSelect()
-        getRedditJSON(whichReddit: "https://www.reddit.com/r/subreddit/top/.json?limit=50")
+        getRedditJSON(whichReddit: "https://www.reddit.com/r/funny/top/.json?limit=50")
 
     }
     
     @objc func refresh(_ sender: AnyObject) {
-        getRedditJSON(whichReddit: "https://www.reddit.com/r/subreddit/top/.json?limit=50")
+        getRedditJSON(whichReddit: "https://www.reddit.com/r/funny/top/.json?limit=50")
         refreshControl.endRefreshing()
     }
     
@@ -126,7 +121,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return dataArray.count
     }
 
-    
+    //Add data to the Custom Cells using the Cell identifier
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let data = dataArray[indexPath.row]
@@ -140,6 +135,9 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         let authorLabel = cell.viewWithTag(11) as? UILabel
         authorLabel?.text = data.author
+        
+        let hoursLabel = cell.viewWithTag(12) as? UILabel
+        hoursLabel?.text = data.created
         
         let imageThumbnail = cell.viewWithTag(20) as? UIImageView
         if data.image.count > 8 {
@@ -156,9 +154,20 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let commentsLabel = cell.viewWithTag(31) as? UILabel
         commentsLabel?.text = "\(data.comments) comments"
         
+        let dismissButton = cell.viewWithTag(30) as? UIButton
+        dismissButton?.tag = indexPath.row
+        dismissButton?.addTarget(self, action: #selector(self.dismissPost(_:)), for: .touchUpInside)
+
         return cell
     }
     
+    //function that removes one post from list
+    @objc func dismissPost(_ sender: AnyObject) {
+        dataArray.remove(at: sender.tag)
+        self.tableView?.reloadData()
+    }
+    
+    //protocol in charge of send to the delegate of DetailViewController the information needed to show the data in the view
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
       let selectedPost = dataArray[indexPath.row]
         dataArray[indexPath.row].seen = true
@@ -220,5 +229,17 @@ class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDa
 extension MasterViewController: UISplitViewControllerDelegate {
     func splitViewController(_ svc: UISplitViewController, topColumnForCollapsingToProposedTopColumn proposedTopColumn: UISplitViewController.Column) -> UISplitViewController.Column {
         return .primary
+    }
+}
+
+extension Date {
+    static func -(recent: Date, previous: Date) -> (month: Int?, day: Int?, hour: Int?, minute: Int?, second: Int?) {
+        let day = Calendar.current.dateComponents([.day], from: previous, to: recent).day
+        let month = Calendar.current.dateComponents([.month], from: previous, to: recent).month
+        let hour = Calendar.current.dateComponents([.hour], from: previous, to: recent).hour
+        let minute = Calendar.current.dateComponents([.minute], from: previous, to: recent).minute
+        let second = Calendar.current.dateComponents([.second], from: previous, to: recent).second
+
+        return (month: month, day: day, hour: hour, minute: minute, second: second)
     }
 }

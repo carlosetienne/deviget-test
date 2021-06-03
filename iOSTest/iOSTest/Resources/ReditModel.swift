@@ -15,47 +15,50 @@ struct newJSONDecoderRedditModelData: Codable {
     let modhash: String
     let dist: Int
     let children: [newJSONDecoderChild]
-    let after, before: JSONNull?
+    let after: String
+    let before: JSONNull?
 }
 
 // MARK: - newJSONDecoderChild
 struct newJSONDecoderChild: Codable {
-    let kind: String
+    let kind: newJSONDecoderKind
     let data: newJSONDecoderChildData
 }
 
 // MARK: - newJSONDecoderChildData
 struct newJSONDecoderChildData: Codable {
     let approvedAtUTC: JSONNull?
-    let subreddit, selftext, authorFullname: String
+    let subreddit: newJSONDecoderSubreddit
+    let selftext, authorFullname: String
     let saved: Bool
     let modReasonTitle: JSONNull?
     let gilded: Int
     let clicked: Bool
     let title: String
     let linkFlairRichtext: [JSONAny]
-    let subredditNamePrefixed: String
+    let subredditNamePrefixed: newJSONDecoderSubredditNamePrefixed
     let hidden: Bool
     let pwls: Int
-    let linkFlairCSSClass: String?
-    let downs: Int
-    let thumbnailHeight, topAwardedType: JSONNull?
+    let linkFlairCSSClass: JSONNull?
+    let downs, thumbnailHeight: Int
+    let topAwardedType: JSONNull?
     let hideScore: Bool
     let name: String
     let quarantine: Bool
-    let linkFlairTextColor: String
+    let linkFlairTextColor: newJSONDecoderFlairTextColor
     let upvoteRatio: Double
-    let authorFlairBackgroundColor: JSONNull?
-    let subredditType: String
+    let authorFlairBackgroundColor: String?
+    let subredditType: newJSONDecoderSubredditType
     let ups, totalAwardsReceived: Int
-    let mediaEmbed: newJSONDecoderGildings
-    let thumbnailWidth, authorFlairTemplateID: JSONNull?
+    let mediaEmbed: newJSONDecoderMediaEmbed
+    let thumbnailWidth: Int
+    let authorFlairTemplateID: JSONNull?
     let isOriginalContent: Bool
     let userReports: [JSONAny]
-    let secureMedia: JSONNull?
+    let secureMedia: newJSONDecoderMedia?
     let isRedditMediaDomain, isMeta: Bool
     let category: JSONNull?
-    let secureMediaEmbed: newJSONDecoderGildings
+    let secureMediaEmbed: newJSONDecoderMediaEmbed
     let linkFlairText: String?
     let canModPost: Bool
     let score: Int
@@ -63,29 +66,34 @@ struct newJSONDecoderChildData: Codable {
     let isCreatedFromAdsUI, authorPremium: Bool
     let thumbnail: String
     let edited: Bool
-    let authorFlairCSSClass: JSONNull?
+    let authorFlairCSSClass: newJSONDecoderAuthorFlairCSSClass?
     let authorFlairRichtext: [JSONAny]
     let gildings: newJSONDecoderGildings
+    let postHint: newJSONDecoderPostHint
     let contentCategories: JSONNull?
     let isSelf: Bool
     let modNote: JSONNull?
     let created: Int
-    let linkFlairType: String
+    let linkFlairType: newJSONDecoderFlairType
     let wls: Int
     let removedByCategory, bannedBy: JSONNull?
-    let authorFlairType, domain: String
+    let authorFlairType: newJSONDecoderFlairType
+    let domain: newJSONDecoderDomain
     let allowLiveComments: Bool
-    let selftextHTML: String?
-    let likes, suggestedSort, bannedAtUTC, viewCount: JSONNull?
+    let selftextHTML, likes, suggestedSort, bannedAtUTC: JSONNull?
+    let urlOverriddenByDest: String
+    let viewCount: JSONNull?
     let archived, noFollow, isCrosspostable, pinned: Bool
     let over18: Bool
-    let allAwardings, awarders: [JSONAny]
+    let preview: newJSONDecoderPreview
+    let allAwardings: [newJSONDecoderAllAwarding]
+    let awarders: [JSONAny]
     let mediaOnly, canGild, spoiler, locked: Bool
-    let authorFlairText: JSONNull?
+    let authorFlairText: String?
     let treatmentTags: [JSONAny]
     let visited: Bool
     let removedBy, numReports, distinguished: JSONNull?
-    let subredditID: String
+    let subredditID: newJSONDecoderSubredditID
     let modReasonBy, removalReason: JSONNull?
     let linkFlairBackgroundColor, id: String
     let isRobotIndexable: Bool
@@ -94,18 +102,18 @@ struct newJSONDecoderChildData: Codable {
     let discussionType: JSONNull?
     let numComments: Int
     let sendReplies: Bool
-    let whitelistStatus: String
+    let whitelistStatus: newJSONDecoderWhitelistStatus
     let contestMode: Bool
     let modReports: [JSONAny]
     let authorPatreonFlair: Bool
-    let authorFlairTextColor: JSONNull?
-    let permalink, parentWhitelistStatus: String
+    let authorFlairTextColor: newJSONDecoderFlairTextColor?
+    let permalink: String
+    let parentWhitelistStatus: newJSONDecoderWhitelistStatus
     let stickied: Bool
     let url: String
     let subredditSubscribers, createdUTC, numCrossposts: Int
-    let media: JSONNull?
+    let media: newJSONDecoderMedia?
     let isVideo: Bool
-    let linkFlairTemplateID: String?
 
     enum CodingKeys: String, CodingKey {
         case approvedAtUTC = "approved_at_utc"
@@ -149,6 +157,7 @@ struct newJSONDecoderChildData: Codable {
         case authorFlairCSSClass = "author_flair_css_class"
         case authorFlairRichtext = "author_flair_richtext"
         case gildings
+        case postHint = "post_hint"
         case contentCategories = "content_categories"
         case isSelf = "is_self"
         case modNote = "mod_note"
@@ -164,12 +173,14 @@ struct newJSONDecoderChildData: Codable {
         case likes
         case suggestedSort = "suggested_sort"
         case bannedAtUTC = "banned_at_utc"
+        case urlOverriddenByDest = "url_overridden_by_dest"
         case viewCount = "view_count"
         case archived
         case noFollow = "no_follow"
         case isCrosspostable = "is_crosspostable"
         case pinned
         case over18 = "over_18"
+        case preview
         case allAwardings = "all_awardings"
         case awarders
         case mediaOnly = "media_only"
@@ -205,12 +216,264 @@ struct newJSONDecoderChildData: Codable {
         case numCrossposts = "num_crossposts"
         case media
         case isVideo = "is_video"
-        case linkFlairTemplateID = "link_flair_template_id"
     }
+}
+
+// MARK: - newJSONDecoderAllAwarding
+struct newJSONDecoderAllAwarding: Codable {
+    let giverCoinReward: Int?
+    let subredditID: JSONNull?
+    let isNew: Bool
+    let daysOfDripExtension, coinPrice: Int
+    let id: String
+    let pennyDonate: Int?
+    let awardSubType: newJSONDecoderAwardSubType
+    let coinReward: Int
+    let iconURL: String
+    let daysOfPremium: Int
+    let tiersByRequiredAwardings: [String: newJSONDecoderTiersByRequiredAwarding]?
+    let resizedIcons: [newJSONDecoderResizedIcon]
+    let iconWidth, staticIconWidth: Int
+    let startDate: JSONNull?
+    let isEnabled: Bool
+    let awardingsRequiredToGrantBenefits: Int?
+    let allAwardingDescription: String
+    let endDate: JSONNull?
+    let subredditCoinReward, count, staticIconHeight: Int
+    let name: String
+    let resizedStaticIcons: [newJSONDecoderResizedIcon]
+    let iconFormat: newJSONDecoderFormat?
+    let iconHeight: Int
+    let pennyPrice: Int?
+    let awardType: newJSONDecoderAwardType
+    let staticIconURL: String
+
+    enum CodingKeys: String, CodingKey {
+        case giverCoinReward = "giver_coin_reward"
+        case subredditID = "subreddit_id"
+        case isNew = "is_new"
+        case daysOfDripExtension = "days_of_drip_extension"
+        case coinPrice = "coin_price"
+        case id
+        case pennyDonate = "penny_donate"
+        case awardSubType = "award_sub_type"
+        case coinReward = "coin_reward"
+        case iconURL = "icon_url"
+        case daysOfPremium = "days_of_premium"
+        case tiersByRequiredAwardings = "tiers_by_required_awardings"
+        case resizedIcons = "resized_icons"
+        case iconWidth = "icon_width"
+        case staticIconWidth = "static_icon_width"
+        case startDate = "start_date"
+        case isEnabled = "is_enabled"
+        case awardingsRequiredToGrantBenefits = "awardings_required_to_grant_benefits"
+        case allAwardingDescription = "description"
+        case endDate = "end_date"
+        case subredditCoinReward = "subreddit_coin_reward"
+        case count
+        case staticIconHeight = "static_icon_height"
+        case name
+        case resizedStaticIcons = "resized_static_icons"
+        case iconFormat = "icon_format"
+        case iconHeight = "icon_height"
+        case pennyPrice = "penny_price"
+        case awardType = "award_type"
+        case staticIconURL = "static_icon_url"
+    }
+}
+
+enum newJSONDecoderAwardSubType: String, Codable {
+    case global = "GLOBAL"
+    case group = "GROUP"
+}
+
+enum newJSONDecoderAwardType: String, Codable {
+    case global = "global"
+}
+
+enum newJSONDecoderFormat: String, Codable {
+    case apng = "APNG"
+    case png = "PNG"
+}
+
+// MARK: - newJSONDecoderResizedIcon
+struct newJSONDecoderResizedIcon: Codable {
+    let url: String
+    let width, height: Int
+    let format: newJSONDecoderFormat?
+}
+
+// MARK: - newJSONDecoderTiersByRequiredAwarding
+struct newJSONDecoderTiersByRequiredAwarding: Codable {
+    let resizedIcons: [newJSONDecoderResizedIcon]
+    let awardingsRequired: Int
+    let staticIcon: newJSONDecoderResizedIcon
+    let resizedStaticIcons: [newJSONDecoderResizedIcon]
+    let icon: newJSONDecoderResizedIcon
+
+    enum CodingKeys: String, CodingKey {
+        case resizedIcons = "resized_icons"
+        case awardingsRequired = "awardings_required"
+        case staticIcon = "static_icon"
+        case resizedStaticIcons = "resized_static_icons"
+        case icon
+    }
+}
+
+enum newJSONDecoderAuthorFlairCSSClass: String, Codable {
+    case comic = "comic"
+}
+
+enum newJSONDecoderFlairTextColor: String, Codable {
+    case dark = "dark"
+}
+
+enum newJSONDecoderFlairType: String, Codable {
+    case text = "text"
+}
+
+enum newJSONDecoderDomain: String, Codable {
+    case iImgurCOM = "i.imgur.com"
+    case iReddIt = "i.redd.it"
+    case imgurCOM = "imgur.com"
+    case vReddIt = "v.redd.it"
 }
 
 // MARK: - newJSONDecoderGildings
 struct newJSONDecoderGildings: Codable {
+    let gid1, gid2: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case gid1 = "gid_1"
+        case gid2 = "gid_2"
+    }
+}
+
+// MARK: - newJSONDecoderMedia
+struct newJSONDecoderMedia: Codable {
+    let redditVideo: newJSONDecoderRedditVideo?
+    let type: newJSONDecoderDomain?
+    let oembed: newJSONDecoderOembed?
+
+    enum CodingKeys: String, CodingKey {
+        case redditVideo = "reddit_video"
+        case type, oembed
+    }
+}
+
+// MARK: - newJSONDecoderOembed
+struct newJSONDecoderOembed: Codable {
+    let providerURL: String
+    let version: String
+    let url: String
+    let height, width: Int
+    let html, providerName, type: String
+
+    enum CodingKeys: String, CodingKey {
+        case providerURL = "provider_url"
+        case version, url, height, width, html
+        case providerName = "provider_name"
+        case type
+    }
+}
+
+// MARK: - newJSONDecoderRedditVideo
+struct newJSONDecoderRedditVideo: Codable {
+    let bitrateKbps: Int
+    let fallbackURL: String
+    let height, width: Int
+    let scrubberMediaURL: String
+    let dashURL: String
+    let duration: Int
+    let hlsURL: String
+    let isGIF: Bool
+    let transcodingStatus: newJSONDecoderTranscodingStatus
+
+    enum CodingKeys: String, CodingKey {
+        case bitrateKbps = "bitrate_kbps"
+        case fallbackURL = "fallback_url"
+        case height, width
+        case scrubberMediaURL = "scrubber_media_url"
+        case dashURL = "dash_url"
+        case duration
+        case hlsURL = "hls_url"
+        case isGIF = "is_gif"
+        case transcodingStatus = "transcoding_status"
+    }
+}
+
+enum newJSONDecoderTranscodingStatus: String, Codable {
+    case completed = "completed"
+}
+
+// MARK: - newJSONDecoderMediaEmbed
+struct newJSONDecoderMediaEmbed: Codable {
+    let content: String?
+    let width: Int?
+    let scrolling: Bool?
+    let height: Int?
+    let mediaDomainURL: String?
+
+    enum CodingKeys: String, CodingKey {
+        case content, width, scrolling, height
+        case mediaDomainURL = "media_domain_url"
+    }
+}
+
+enum newJSONDecoderWhitelistStatus: String, Codable {
+    case allAds = "all_ads"
+    case promoAdultNsfw = "promo_adult_nsfw"
+}
+
+enum newJSONDecoderPostHint: String, Codable {
+    case hostedVideo = "hosted:video"
+    case image = "image"
+    case link = "link"
+}
+
+// MARK: - newJSONDecoderPreview
+struct newJSONDecoderPreview: Codable {
+    let images: [newJSONDecoderImage]
+    let enabled: Bool
+}
+
+// MARK: - newJSONDecoderImage
+struct newJSONDecoderImage: Codable {
+    let source: newJSONDecoderResizedIcon
+    let resolutions: [newJSONDecoderResizedIcon]
+    let variants: newJSONDecoderVariants
+    let id: String
+}
+
+// MARK: - newJSONDecoderVariants
+struct newJSONDecoderVariants: Codable {
+    let obfuscated, nsfw: newJSONDecoderNsfw?
+}
+
+// MARK: - newJSONDecoderNsfw
+struct newJSONDecoderNsfw: Codable {
+    let source: newJSONDecoderResizedIcon
+    let resolutions: [newJSONDecoderResizedIcon]
+}
+
+enum newJSONDecoderSubreddit: String, Codable {
+    case funny = "funny"
+}
+
+enum newJSONDecoderSubredditID: String, Codable {
+    case t52Qh33 = "t5_2qh33"
+}
+
+enum newJSONDecoderSubredditNamePrefixed: String, Codable {
+    case rFunny = "r/funny"
+}
+
+enum newJSONDecoderSubredditType: String, Codable {
+    case subredditTypePublic = "public"
+}
+
+enum newJSONDecoderKind: String, Codable {
+    case t3 = "t3"
 }
 
 // MARK: - Encode/decode helpers

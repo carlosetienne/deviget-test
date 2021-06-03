@@ -13,32 +13,30 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var imageButton: UIButton!
     var currentImage: UIImage!
     
+    //Action that saves the UIImage in the photo gallery
     @IBAction func saveImageButton(_ sender: Any) {
         let imageSaver = ImageSaver()
         imageSaver.writeToPhotoAlbum(image: currentImage)
     }
     
+    //Refreshes the UI
     var post: RedditData? {
       didSet {
         refreshUI()
       }
     }
     
+    //Function that refresh the UI
     private func refreshUI() {
       loadViewIfNeeded()
         authorLabel.text = post?.author
         titleText.text = post?.title
         
-        if post?.image.count ?? 0 > 8 {
-            if let image = UIImage(named: post?.image ?? "placeholder") {
-                currentImage = image
-                imageButton.setImage(image, for: .normal)
-            }
-        } else{
-            let image = UIImage(named:"placeholder")
-            currentImage = image
-            imageButton.setImage(image, for: .normal)
-        }
+        let url = URL(string: post?.image ?? "https://i.stack.imgur.com/y9DpT.jpg")
+        let imageData = try? Data(contentsOf: url!)
+        currentImage = UIImage(data: imageData!)
+        imageButton.setImage(currentImage, for: .normal)
+
     }
     
     override func viewDidLoad() {
@@ -58,6 +56,7 @@ class DetailViewController: UIViewController {
     }
     */
     
+    //Class created to save the UIImage on PhotoAlbum
     class ImageSaver: NSObject {
         func writeToPhotoAlbum(image: UIImage) {
             UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveError), nil)
