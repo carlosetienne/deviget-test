@@ -21,10 +21,18 @@ protocol postSelectionDelegate: class {
   func postSelected(_ newPost: RedditData)
 }
 
-class MasterViewController: UITableViewController {
+class MasterViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var result  = [Any]()
     var dataArray = [RedditData]()
     weak var delegate: postSelectionDelegate?
+    var refreshControl = UIRefreshControl()
+
+    @IBOutlet weak var tableView: UITableView?
+
+    @IBAction func dismissAll(_ sender: Any) {
+        dataArray.removeAll()
+        self.tableView?.reloadData()
+    }
     
     func setupSplit() {
         splitViewController?.delegate = self
@@ -57,7 +65,7 @@ class MasterViewController: UITableViewController {
                             self.dataArray.append(redditData)
                         }
                         
-                        self.tableView.reloadData()
+                        self.tableView?.reloadData()
                     } catch {
                         print(error)
                     }
@@ -78,21 +86,29 @@ class MasterViewController: UITableViewController {
             dataArray.append(redditData)
         }
         
-        self.tableView.reloadData()
+        self.tableView?.reloadData()
     }
     
     func validateSelect() {
         if UIDevice.current.userInterfaceIdiom == .phone {
-            tableView.deselectRow(at: IndexPath(row: 0, section: 0), animated: false)
+            self.tableView?.deselectRow(at: IndexPath(row: 0, section: 0), animated: false)
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
+        self.tableView?.refreshControl = refreshControl
         setupSplit()
         validateSelect()
         getRedditJSON(whichReddit: "https://www.reddit.com/r/subreddit/top/.json?limit=50")
-       
+
+    }
+    
+    @objc func refresh(_ sender: AnyObject) {
+        getRedditJSON(whichReddit: "https://www.reddit.com/r/subreddit/top/.json?limit=50")
+        refreshControl.endRefreshing()
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -101,12 +117,12 @@ class MasterViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataArray.count
     }
 
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let data = dataArray[indexPath.row]
         
@@ -138,7 +154,7 @@ class MasterViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
       let selectedPost = dataArray[indexPath.row]
         dataArray[indexPath.row].seen = true
         delegate?.postSelected(selectedPost)
@@ -148,6 +164,7 @@ class MasterViewController: UITableViewController {
         }
     }
     
+
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
